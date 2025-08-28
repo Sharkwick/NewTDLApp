@@ -1,0 +1,15 @@
+streamlit~=1.40.1
+altair
+numpy
+pandas~=2.0.3
+tzlocal
+pip~=25.0.1
+wheel~=0.45.1
+protobuf~=5.29.5
+cryptography~=45.0.6
+utils~=1.0.2
+tornado~=6.4.2
+setuptools~=75.3.2
+firebase-admin~=6.9.0
+matplotlib~=3.7.5
+seaborn~=0.13.2
