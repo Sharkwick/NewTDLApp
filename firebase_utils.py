@@ -8,10 +8,13 @@ def load_firebase_credentials():
         return credentials.Certificate("secrets/serviceAccountKey.json")
     except FileNotFoundError:
         try:
-            raw = st.secrets["FIREBASE_KEY_JSON"]
-            return credentials.Certificate(dict(raw))
+            cred_dict = st.secrets["FIREBASE_KEY_JSON"]
+            return credentials.Certificate(cred_dict)
+        except KeyError:
+            raise ValueError("FIREBASE_KEY_JSON not found in Streamlit secrets.")
         except Exception as e:
-            raise ValueError("Firebase credentials not found.")
+            raise ValueError(f"Failed to load Firebase credentials: {e}")
+
 
 def initialize_firebase():
     if not firebase_admin._apps:
