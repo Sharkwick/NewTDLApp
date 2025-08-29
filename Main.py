@@ -4,7 +4,8 @@ from AuthUI import setup_page,login, register
 from SidebarUI import sidebar
 from UX import get_ux_pending_tasks, get_ux_completed_tasks, get_task_metrics, task_add_ux
 from firebase_utils import initialize_firebase
-from functions import get_existing_groups, start_listener
+from functions import start_listener
+from datetime import datetime
 
 setup_page()
 db = initialize_firebase()
@@ -32,9 +33,15 @@ tasks_ref = db.collection("tasks").document(nickname).collection("items")
 docs = list(tasks_ref.stream())
 
 pending_count, completed_count = sidebar(nickname, tasks_ref, db)
-
-st.markdown("# Wickz Day Planner 2.0")
-st.markdown("---")
+st.markdown(
+    "<h1 style='text-align: Center;'>Wickz Day Planner</h1>",
+    unsafe_allow_html=True
+)
+currentdate = datetime.now().strftime("%Y-%m-%d %H:%M")
+st.markdown(
+    f"<h3 style='text-align: center;'>Current Date and Time : {currentdate}</h3>",
+    unsafe_allow_html=True
+)
 st.markdown("## Task Management")
 expander = st.expander("### 🔰 Create a New Task", expanded=False)
 with expander:
@@ -42,7 +49,6 @@ with expander:
 st.markdown("---")
 st.markdown("## Task Overview")
 get_task_metrics(tasks_ref)
-st.markdown("---")
 
 t1,t2 = st.tabs(["Pending","Completed"])
 with t1:

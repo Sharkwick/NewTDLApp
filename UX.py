@@ -59,7 +59,7 @@ def get_ux_pending_tasks(tasks_ref):
             st.session_state.original_df = st.session_state.original_df.reset_index(drop=True)
 
         with ((st.form(key="task_edit_form_Pen"))):
-            st.markdown(f"#### {selected_group_pen} Pending Tasks")
+            st.markdown(f"#### ⌛ {selected_group_pen} Pending Tasks")
             if selected_group_pen != "All":
                 col1, col2, col3 = st.columns(3)
                 col1.markdown(f"Pending Tasks : {pending_count}")
@@ -192,7 +192,7 @@ def get_ux_completed_tasks(tasks_ref):
             st.session_state.original_df = st.session_state.original_df.reset_index(drop=True)
 
         with st.form(key="task_edit_form_com"):
-            st.markdown(f"#### {selected_group_com} Pending Tasks")
+            st.markdown(f"#### ✅ {selected_group_com} Completed Tasks")
             if selected_group_com != "All":
                 col1, col2, col3 = st.columns(3)
                 col1.markdown(f"Pending Tasks: {pending_count}")
@@ -248,10 +248,10 @@ def  get_task_metrics(tasks_ref):
     Completion_Perc_cal = round(comc/totc,2)*100 if totc > 0 else 0
     Completion_Perc = f"{Completion_Perc_cal:.0f}%" if totc > 0 else 0
     col1, col2, col3 , col4 = st.columns(4)
-    col1.metric(label="Total Tasks", value=totc)
-    col2.metric(label="Pending Tasks", value=penc)
-    col3.metric(label="Completed Tasks", value=comc)
-    col4.metric(label="Completion Percentage", value=Completion_Perc)
+    col1.metric(label="📃 Total Tasks", value=totc)
+    col2.metric(label="⌛ Pending Tasks", value=penc)
+    col3.metric(label="✅ Completed Tasks", value=comc)
+    col4.metric(label="*️⃣ Completion Percentage", value=Completion_Perc)
 
 def delete_task(doc_id, task_text, tasks_ref):
     tasks_ref.document(doc_id).delete()
