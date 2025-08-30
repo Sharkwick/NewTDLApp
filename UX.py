@@ -17,11 +17,9 @@ def get_ux_pending_tasks(tasks_ref):
     existing_groups = get_existing_groups(docs)
     existing_groupswall = get_existing_groups_e_All(docs)
 
-    completed_count = sum(1 for doc in docs_all_master if doc.to_dict().get("completed", True))
-    pending_count= sum(1 for doc in docs_all_master if not doc.to_dict().get("completed", False))
-    completion_Percent = (completed_count / (pending_count+completed_count)) * 100 if completed_count+pending_count > 0 else 0
+    pending_count2 = sum(1 for doc in docs_all_master if not doc.to_dict().get("completed", False))
 
-    if not pending_count:
+    if not pending_count2:
         st.markdown(f"## No pending tasks 🎉")
     else:
         selected_group_pen = st.selectbox("Select a group to filter tasks:", existing_groups, key="selgrppen")
@@ -38,6 +36,11 @@ def get_ux_pending_tasks(tasks_ref):
 
         task_data = []
         doc_refs = []
+
+        completed_count = sum(1 for doc in fil_docs_all if doc.to_dict().get("completed", True))
+        pending_count = sum(1 for doc in fil_docs if not doc.to_dict().get("completed", False))
+        completion_Percent = (completed_count / (pending_count + completed_count)) * 100 if completed_count + pending_count > 0 else 0
+        tgcount = completed_count + pending_count
 
         for doc in fil_docs:
             data = doc.to_dict()
@@ -59,7 +62,10 @@ def get_ux_pending_tasks(tasks_ref):
             st.session_state.original_df = st.session_state.original_df.reset_index(drop=True)
 
         with ((st.form(key="task_edit_form_Pen"))):
-            st.markdown(f"#### ⌛ {selected_group_pen} Pending Tasks")
+            if selected_group_pen == "All":
+                st.markdown(f"#### ⌛ {selected_group_pen} Pending Tasks")
+            else:
+                st.markdown(f"#### ⌛ {selected_group_pen} Pending Tasks ({tgcount})")
             if selected_group_pen != "All":
                 col1, col2, col3 = st.columns(3)
                 col1.markdown(f"Pending Tasks : {pending_count}")
@@ -140,13 +146,9 @@ def get_ux_completed_tasks(tasks_ref):
     existing_groups = get_existing_groups(docs)
 
     # Corrected completion logic
-    completed_count = sum(1 for doc in docs_all_master if doc.to_dict().get("completed", True))
-    pending_count = sum(1 for doc in docs_all_master if not doc.to_dict().get("completed", False))
-    total_tasks = completed_count + pending_count
-    if completed_count > 0 and pending_count > 0:
-        completion_percent = round((completed_count / total_tasks) * 100, 0) if total_tasks > 0 else 0
+    completed_count2 = sum(1 for doc in docs_all_master if doc.to_dict().get("completed", True))
 
-    if not completed_count:
+    if not completed_count2:
         edited_df = st.markdown(f"## No completed tasks ⌛")
     else:
         selected_group_com = st.selectbox("Select a group to filter tasks:", existing_groups, key="selgrpcom")
@@ -157,7 +159,13 @@ def get_ux_completed_tasks(tasks_ref):
         task_data = []
         doc_refs = []
 
-        for d in docs:
+        completed_count = sum(1 for doc in fil_docs if doc.to_dict().get("completed", True))
+        pending_count = sum(1 for doc in fil_docs_all if not doc.to_dict().get("completed", False))
+        total_tasks = completed_count + pending_count
+        if completed_count > 0 and pending_count > 0:
+            completion_percent = round((completed_count / total_tasks) * 100, 0) if total_tasks > 0 else 0
+
+        for d in fil_docs:
             doc_data = d.to_dict()
             timestamp = doc_data.get("timestamp")
             completed_time = doc_data.get("completed time")
@@ -192,7 +200,10 @@ def get_ux_completed_tasks(tasks_ref):
             st.session_state.original_df = st.session_state.original_df.reset_index(drop=True)
 
         with st.form(key="task_edit_form_com"):
-            st.markdown(f"#### ✅ {selected_group_com} Completed Tasks")
+            if selected_group_com == "All":
+                st.markdown(f"#### ✅ {selected_group_com} Completed Tasks")
+            else:
+                st.markdown(f"#### ✅ {selected_group_com} Completed Tasks ({total_tasks})")
             if selected_group_com != "All":
                 col1, col2, col3 = st.columns(3)
                 col1.markdown(f"Pending Tasks: {pending_count}")
@@ -268,8 +279,10 @@ def task_add_ux(tasks_ref):
         group_cust = c1.text_input("➕ Create New Group")
         group_sel = c2.selectbox("📂 Or select an existing group", options=existing_groups, index=0)
         comment = st.text_area("💬 Task Description")
-        if group_cust.strip() == "" or group_sel.strip() == "":
+        if group_cust.strip() == "" and group_sel.strip() == "":
             group_cust = "General"
+        else:
+            group_cust = group_sel.strip()
 
         if st.form_submit_button("✅ Add Task"):
             final_grp = group_cust.strip() or group_sel
