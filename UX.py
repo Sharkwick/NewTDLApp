@@ -272,6 +272,7 @@ def delete_task(doc_id, task_text, tasks_ref):
 def task_add_ux(tasks_ref):
     docs = docs_init_all(tasks_ref)
     existing_groups = get_existing_groups_e_All(docs)
+    group_count = len(existing_groups)
 
     with st.form("add_task_form", clear_on_submit=True):
         task_txt = st.text_input("📝 Task Name")
@@ -279,10 +280,13 @@ def task_add_ux(tasks_ref):
         group_cust = c1.text_input("➕ Create New Group")
         group_sel = c2.selectbox("📂 Or select an existing group", options=existing_groups, index=0)
         comment = st.text_area("💬 Task Description")
-        if group_cust.strip() == "" and group_sel.strip() == "":
-            group_cust = "General"
+        if group_count > 1:
+            if group_cust.strip() == "" and group_sel.strip() == "":
+                group_cust = "General"
+            else:
+                group_cust = group_sel
         else:
-            group_cust = group_sel if group_sel else "General"
+            group_cust = "General"
 
         if st.form_submit_button("✅ Add Task"):
             final_grp = group_cust.strip() or group_sel
