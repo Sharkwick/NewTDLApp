@@ -282,7 +282,10 @@ def task_add_ux(tasks_ref):
         if group_cust.strip() == "" and group_sel.strip() == "":
             group_cust = "General"
         else:
-            group_cust = group_sel.strip()
+            try:
+                group_cust = group_sel.strip(),
+            except:
+                group_cust = "General"
 
         if st.form_submit_button("✅ Add Task"):
             final_grp = group_cust.strip() or group_sel
