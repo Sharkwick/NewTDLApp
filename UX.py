@@ -281,10 +281,13 @@ def task_add_ux(tasks_ref):
         group_sel = c2.selectbox("📂 Or select an existing group", options=existing_groups, index=0)
         comment = st.text_area("💬 Task Description")
         if group_count > 1:
-            if group_cust.strip() == "" and group_sel.strip() == "":
-                group_cust = "General"
+            if group_cust.strip() == "":
+                if group_sel.strip() == "":
+                    group_cust = "General"
+                else:
+                    group_cust = group_sel
             else:
-                group_cust = group_sel
+                group_cust = group_cust.strip()
         else:
             group_cust = "General"
 
