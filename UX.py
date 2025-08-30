@@ -280,19 +280,16 @@ def task_add_ux(tasks_ref):
         group_cust = c1.text_input("➕ Create New Group")
         group_sel = c2.selectbox("📂 Or select an existing group", options=existing_groups, index=0)
         comment = st.text_area("💬 Task Description")
-        if group_count > 1:
-            if group_cust.strip() == "":
-                if group_sel.strip() == "":
-                    group_cust = "General"
-                else:
-                    group_cust = group_sel
-            else:
-                group_cust = group_cust.strip()
+
+        if group_cust.strip() != "":
+            final_grp = group_cust.strip()
         else:
-            group_cust = "General"
+            if group_count > 1:
+                final_grp = group_sel
+            else:
+                final_grp = "General"
 
         if st.form_submit_button("✅ Add Task"):
-            final_grp = group_cust.strip() or group_sel
             if task_txt.strip():
                 add_new_task(task_txt.strip(), final_grp, comment.strip(), tasks_ref)
                 st.rerun()
